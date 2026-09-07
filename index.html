@@ -1,12 +1,776 @@
-   if (localStorage.getItem("calAgeDarkMode") === "yes") {
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="google-site-verification" content="NYcsbm_yvRcbN5RfPLKDeyZEYJnKrxZlvPq901NQZjc" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9XH76HZFGY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9XH76HZFGY');
+  </script>
+
+  <title>CalAge - Age Calculator, Calculator & Private Vault</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+      transition: 0.3s;
+    }
+
+    body.dark {
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    header {
+      background: #172033;
+      color: white;
+      text-align: center;
+      padding: 25px 16px;
+      position: relative;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      color: #cbd5e1;
+    }
+
+    #themeButton {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      margin: 0;
+      padding: 9px 12px;
+      background: #334155;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      transition: 0.3s;
+    }
+
+    body.dark .card {
+      background: #1e293b;
+      color: #e5e7eb;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #172033;
+    }
+
+    body.dark h2 {
+      color: #f8fafc;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+      color: #172033;
+    }
+
+    body.dark input {
+      background: #0f172a;
+      color: white;
+      border-color: #475569;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button.secondary {
+      background: #64748b;
+    }
+
+    button.danger {
+      background: #dc2626;
+    }
+
+    button.success {
+      background: #16a34a;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 18px;
+      background: #eff6ff;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    body.dark .result {
+      background: #172554;
+    }
+
+    .age-number {
+      font-size: 32px;
+      font-weight: bold;
+      color: #2563eb;
+      margin: 8px 0;
+    }
+
+    .calculator {
+      max-width: 380px;
+      margin: auto;
+    }
+
+    #display {
+      width: 100%;
+      font-size: 28px;
+      text-align: right;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+    }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .keys button {
+      margin: 0;
+      padding: 18px 8px;
+      font-size: 20px;
+      background: #e2e8f0;
+      color: #172033;
+    }
+
+    .keys button.operator {
+      background: #2563eb;
+      color: white;
+    }
+
+    .keys button.equal {
+      background: #16a34a;
+      color: white;
+    }
+
+    .keys button.clear {
+      background: #ef4444;
+      color: white;
+    }
+
+    .vault-box {
+      display: none;
+      margin-top: 20px;
+      padding: 18px;
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+
+    body.dark .vault-box {
+      background: #0f172a;
+    }
+
+    .vault-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .vault-item {
+      background: white;
+      border-radius: 10px;
+      padding: 8px;
+      overflow: hidden;
+      border: 1px solid #d1d5db;
+    }
+
+    body.dark .vault-item {
+      background: #1e293b;
+      border-color: #475569;
+    }
+
+    .vault-item img,
+    .vault-item video {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .vault-item button {
+      width: 100%;
+      padding: 8px;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    body.dark .note {
+      color: #cbd5e1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px 16px;
+      background: #172033;
+      color: white;
+      margin-top: 30px;
+    }
+
+    footer p {
+      margin: 7px 0;
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 500px) {
+      header h1 {
+        font-size: 28px;
+      }
+
+      #themeButton {
+        position: static;
+        margin-top: 15px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .keys button {
+        padding: 15px 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>CalAge</h1>
+    <p>Age Calculator, Simple Calculator & Private Vault</p>
+    <button id="themeButton" onclick="toggleTheme()">🌙 Dark Mode</button>
+  </header>
+
+  <div class="container">
+
+    <!-- Age Calculator -->
+    <div class="card">
+      <h2>🎂 Age Calculator</h2>
+      <p>Enter your date of birth to calculate your exact age.</p>
+
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob">
+
+      <button onclick="calculateAge()">Calculate Age</button>
+      <button onclick="calculateBirthday()" class="success">
+        Next Birthday Countdown
+      </button>
+
+      <div class="result" id="ageResult">
+        Your age will appear here.
+      </div>
+
+      <div class="result" id="birthdayResult">
+        Your next birthday countdown will appear here.
+      </div>
+    </div>
+
+    <!-- Total Age -->
+    <div class="card">
+      <h2>📅 Age in Total Days</h2>
+      <p>Find your approximate total age in days, hours and minutes.</p>
+
+      <button onclick="calculateTotalAge()">Calculate Total Age</button>
+
+      <div class="result" id="totalAgeResult">
+        Total age will appear here.
+      </div>
+    </div>
+
+    <!-- Simple Calculator -->
+    <div class="card">
+      <h2>🧮 Advanced Calculator</h2>
+      <p>Calculate using +, −, ×, ÷, %, brackets and decimals.</p>
+
+      <div class="calculator">
+        <input type="text" id="display" value="0" readonly>
+
+        <div class="keys">
+          <button class="clear" onclick="clearDisplay()">C</button>
+          <button onclick="deleteLast()">⌫</button>
+          <button class="operator" onclick="addToDisplay('%')">%</button>
+          <button class="operator" onclick="addToDisplay('/')">÷</button>
+
+          <button onclick="addToDisplay('7')">7</button>
+          <button onclick="addToDisplay('8')">8</button>
+          <button onclick="addToDisplay('9')">9</button>
+          <button class="operator" onclick="addToDisplay('*')">×</button>
+
+          <button onclick="addToDisplay('4')">4</button>
+          <button onclick="addToDisplay('5')">5</button>
+          <button onclick="addToDisplay('6')">6</button>
+          <button class="operator" onclick="addToDisplay('-')">−</button>
+
+          <button onclick="addToDisplay('1')">1</button>
+          <button onclick="addToDisplay('2')">2</button>
+          <button onclick="addToDisplay('3')">3</button>
+          <button class="operator" onclick="addToDisplay('+')">+</button>
+
+          <button onclick="addToDisplay('0')">0</button>
+          <button onclick="addToDisplay('.')">.</button>
+          <button onclick="addToDisplay('(')">(</button>
+          <button onclick="addToDisplay(')')">)</button>
+
+          <button class="equal" onclick="calculate()">=</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Private Vault -->
+    <div class="card">
+      <h2>🔐 Private Vault Calculator</h2>
+      <p>
+        Calculator ke andar private photo aur video vault kholne ke liye PIN use karein.
+      </p>
+
+      <label for="vaultPin">Enter PIN</label>
+      <input
+        type="password"
+        id="vaultPin"
+        placeholder="4 digit PIN"
+        maxlength="4"
+        inputmode="numeric"
+      >
+
+      <button onclick="openVault()">Open Private Vault</button>
+      <button class="secondary" onclick="setVaultPin()">Set/Change PIN</button>
+
+      <div class="vault-box" id="vaultBox">
+        <h3>Private Vault</h3>
+
+        <label for="privateFiles">Choose Photos or Videos</label>
+        <input
+          type="file"
+          id="privateFiles"
+          accept="image/*,video/*"
+          multiple
+          onchange="savePrivateFiles()"
+        >
+
+        <button class="secondary" onclick="hideVault()">Hide Vault</button>
+        <button class="danger" onclick="clearVault()">Delete All Files</button>
+
+        <p class="note">
+          Files sirf isi browser ke local storage mein save hongi.
+          Browser data clear karne par files delete ho sakti hain.
+          Highly sensitive files ke liye is basic vault par depend na karein.
+        </p>
+
+        <div class="vault-gallery" id="vaultGallery"></div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="card">
+      <h2>About CalAge</h2>
+      <p>
+        CalAge is a simple website for calculating age, performing everyday
+        calculations and managing a basic private browser vault.
+      </p>
+      <p><strong>Developer:</strong> Alfaiz Ansari</p>
+      <p><strong>Contact:</strong> +91 8291476533</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 CalAge</p>
+    <p>Developed by Alfaiz Ansari</p>
+  </footer>
+
+  <script>
+    let privateFiles = JSON.parse(
+      localStorage.getItem("calAgePrivateFiles") || "[]"
+    );
+
+    function calculateAge() {
+      const dob = document.getElementById("dob").value;
+      const result = document.getElementById("ageResult");
+
+      if (!dob) {
+        result.innerHTML = "Please select your date of birth.";
+        return;
+      }
+
+      const birthDate = new Date(dob);
+      const today = new Date();
+
+      if (birthDate > today) {
+        result.innerHTML = "Please select a valid date of birth.";
+        return;
+      }
+
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+
+        const previousMonth = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          0
+        );
+
+        days += previousMonth.getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      result.innerHTML = `
+        <div>Your age is</div>
+        <div class="age-number">${years} Years</div>
+        <div>${months} Months & ${days} Days</div>
+      `;
+    }
+
+    function calculateBirthday() {
+      const dob = document.getElementById("dob").value;
+      const result = document.getElementById("birthdayResult");
+
+      if (!dob) {
+        result.innerHTML = "Please select your date of birth first.";
+        return;
+      }
+
+      const birthDate = new Date(dob);
+      const today = new Date();
+
+      let nextBirthday = new Date(
+        today.getFullYear(),
+        birthDate.getMonth(),
+        birthDate.getDate()
+      );
+
+      if (nextBirthday < today) {
+        nextBirthday = new Date(
+          today.getFullYear() + 1,
+          birthDate.getMonth(),
+          birthDate.getDate()
+        );
+      }
+
+      const difference = nextBirthday - today;
+      const days = Math.ceil(
+        difference / (1000 * 60 * 60 * 24)
+      );
+
+      if (days === 0) {
+        result.innerHTML = "🎉 Happy Birthday! Your birthday is today.";
+      } else {
+        result.innerHTML = `
+          <div>Your next birthday is in</div>
+          <div class="age-number">${days} Days</div>
+          <div>🎉 Keep smiling!</div>
+        `;
+      }
+    }
+
+    function calculateTotalAge() {
+      const dob = document.getElementById("dob").value;
+      const result = document.getElementById("totalAgeResult");
+
+      if (!dob) {
+        result.innerHTML = "Please select your date of birth first.";
+        return;
+      }
+
+      const birthDate = new Date(dob);
+      const today = new Date();
+
+      if (birthDate > today) {
+        result.innerHTML = "Please select a valid date of birth.";
+        return;
+      }
+
+      const difference = today - birthDate;
+
+      const days = Math.floor(
+        difference / (1000 * 60 * 60 * 24)
+      );
+
+      const hours = Math.floor(
+        difference / (1000 * 60 * 60)
+      );
+
+      const minutes = Math.floor(
+        difference / (1000 * 60)
+      );
+
+      result.innerHTML = `
+        <div>Total Days</div>
+        <div class="age-number">${days.toLocaleString()}</div>
+        <div>Total Hours: ${hours.toLocaleString()}</div>
+        <div>Total Minutes: ${minutes.toLocaleString()}</div>
+      `;
+    }
+
+    function addToDisplay(value) {
+      const display = document.getElementById("display");
+
+      if (display.value === "0" || display.value === "Error") {
+        display.value = value;
+      } else {
+        display.value += value;
+      }
+    }
+
+    function clearDisplay() {
+      document.getElementById("display").value = "0";
+    }
+
+    function deleteLast() {
+      const display = document.getElementById("display");
+
+      if (
+        display.value === "Error" ||
+        display.value.length <= 1
+      ) {
+        display.value = "0";
+      } else {
+        display.value = display.value.slice(0, -1);
+      }
+    }
+
+    function calculate() {
+      const display = document.getElementById("display");
+
+      try {
+        const expression = display.value;
+
+        if (!/^[0-9+\-*/%.() ]+$/.test(expression)) {
+          throw new Error("Invalid input");
+        }
+
+        const answer = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        if (!Number.isFinite(answer)) {
+          throw new Error("Invalid result");
+        }
+
+        display.value = answer;
+      } catch {
+        display.value = "Error";
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+
+      const isDark = document.body.classList.contains("dark");
+
+      localStorage.setItem("calAgeDarkMode", isDark ? "yes" : "no");
+
+      document.getElementById("themeButton").innerText =
+        isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+    }
+
+    function setVaultPin() {
+      const pin = document.getElementById("vaultPin").value;
+
+      if (!/^[0-9]{4}$/.test(pin)) {
+        alert("Please enter exactly 4 numbers.");
+        return;
+      }
+
+      localStorage.setItem("calAgeVaultPin", pin);
+      document.getElementById("vaultPin").value = "";
+      alert("PIN saved successfully.");
+    }
+
+    function openVault() {
+      const enteredPin = document.getElementById("vaultPin").value;
+      const savedPin = localStorage.getItem("calAgeVaultPin");
+
+      if (!savedPin) {
+        alert("Pehle Set/Change PIN button se PIN set karein.");
+        return;
+      }
+
+      if (enteredPin !== savedPin) {
+        alert("Wrong PIN.");
+        return;
+      }
+
+      document.getElementById("vaultBox").style.display = "block";
+      document.getElementById("vaultPin").value = "";
+
+      displayPrivateFiles();
+    }
+
+    function hideVault() {
+      document.getElementById("vaultBox").style.display = "none";
+      document.getElementById("privateFiles").value = "";
+      document.getElementById("vaultGallery").innerHTML = "";
+    }
+
+    function savePrivateFiles() {
+      const fileInput = document.getElementById("privateFiles");
+      const files = Array.from(fileInput.files);
+
+      files.forEach(file => {
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+          privateFiles.push({
+            name: file.name,
+            type: file.type,
+            data: event.target.result
+          });
+
+          localStorage.setItem(
+            "calAgePrivateFiles",
+            JSON.stringify(privateFiles)
+          );
+
+          displayPrivateFiles();
+        };
+
+        reader.readAsDataURL(file);
+      });
+
+      fileInput.value = "";
+    }
+
+    function displayPrivateFiles() {
+      const gallery = document.getElementById("vaultGallery");
+      gallery.innerHTML = "";
+
+      if (privateFiles.length === 0) {
+        gallery.innerHTML = "<p>No private files added yet.</p>";
+        return;
+      }
+
+      privateFiles.forEach((file, index) => {
+        const item = document.createElement("div");
+        item.className = "vault-item";
+
+        if (file.type.startsWith("image/")) {
+          item.innerHTML = `
+            <img src="${file.data}" alt="Private image">
+            <button class="danger" onclick="deletePrivateFile(${index})">
+              Delete
+            </button>
+          `;
+        } else if (file.type.startsWith("video/")) {
+          item.innerHTML = `
+            <video src="${file.data}" controls></video>
+            <button class="danger" onclick="deletePrivateFile(${index})">
+              Delete
+            </button>
+          `;
+        }
+
+        gallery.appendChild(item);
+      });
+    }
+
+    function deletePrivateFile(index) {
+      const confirmDelete = confirm(
+        "Kya aap is file ko delete karna chahte hain?"
+      );
+
+      if (!confirmDelete) {
+        return;
+      }
+
+      privateFiles.splice(index, 1);
+
+      localStorage.setItem(
+        "calAgePrivateFiles",
+        JSON.stringify(privateFiles)
+      );
+
+      displayPrivateFiles();
+    }
+
+    function clearVault() {
+      const confirmDelete = confirm(
+        "Kya aap sabhi private files delete karna chahte hain?"
+      );
+
+      if (!confirmDelete) {
+        return;
+      }
+
+      privateFiles = [];
+
+      localStorage.removeItem("calAgePrivateFiles");
+
+      displayPrivateFiles();
+    }
+
+    if (localStorage.getItem("calAgeDarkMode") === "yes") {
       document.body.classList.add("dark");
       document.getElementById("themeButton").innerText =
         "☀️ Light Mode";
-    }
-
-    if (sessionStorage.getItem("calAgeLoggedIn") === "yes") {
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("mainWebsite").style.display = "block";
     }
   </script>
 
